@@ -1,0 +1,40 @@
+# This is an example PKGBUILD file. Use this as a start to creating your own,
+# and remove these comments. For more information, see 'man PKGBUILD'.
+# NOTE: Please fill out the license field for your package! If it is unknown,
+# then please put 'unknown'.
+
+# Maintainer: Your Name <youremail@domain.com>
+pkgname=fakeuser-demo
+pkgver=0.0.1
+pkgrel=1
+pkgdesc="Example package for fakeuser (files in /var/$pkgname)"
+arch=(any)
+url=""
+license=('GPL')
+groups=()
+install=INSTALL
+depends=()
+makedepends=()
+source=()
+md5sums=() 
+
+build() {
+	touch normal
+	touch grp
+	touch usr
+	touch all
+}
+
+
+package() {
+	install -m 0755 -d "$pkgdir/var/$pkgname"
+	cd  "$pkgdir/var/$pkgname/"
+	cp -arf  "$srcdir"/* .
+
+
+        fakeadd -G -n agroup -g 555
+        fakeadd -U -n testuser -u 444 -g 555
+        chgrp agroup grp
+        chown testuser usr
+        chown testuser:agroup all
+}

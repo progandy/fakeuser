@@ -1,0 +1,4 @@
+#/bin/sh
+BASEDIR=$(dirname "$0")
+BASEDIR=$(realpath "$BASEDIR/../")
+PATH="$PATH:$BASEDIR/" LD_PRELOAD="$BASEDIR/libfakeuser.so" exec makepkg "$@"
