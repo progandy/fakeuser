@@ -24,6 +24,7 @@
 #include <errno.h>
 #include "util.h"
 
+// create recursive directory path
 int mkdir_r(char *dir, mode_t mode) {
 	char *str = strdup(dir);
 	char *tok = strtok(str, "/");

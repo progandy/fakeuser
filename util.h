@@ -22,6 +22,7 @@
 
 #include <sys/stat.h>
 
+// create recursive directory path
 int mkdir_r(char *dir, mode_t mode);
 
 #endif //__FU_UTIL_H__

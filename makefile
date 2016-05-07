@@ -1,6 +1,8 @@
-CC = gcc
+CC ?= gcc
 
-CFLAGS +=  -D_GNU_SOURCE -std=c99 -Wall
+CFLAGS ?= -Wall
+
+CFLAGS += -D_GNU_SOURCE -D_XOPEN_SOURCE=700 -std=c99
 
 all: libfakeuser.so fakeadd
 

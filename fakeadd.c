@@ -17,7 +17,6 @@
     along with fakeuser.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#define _GNU_SOURCE 1
 #include <unistd.h>
 #include <stdlib.h>
 #include <pwd.h>
@@ -31,16 +30,19 @@
 
 static char *name;
 
+// print usage to given stream
 void usage_fd(FILE * f) {
 	fprintf(f,"Usage: %s -G|-U -n name [-g gid] [-u uid] [-p password] [-m memberlist] [-s shell] [-c gecos] [-d dir] [-h] \n"
 		"(C) 2013 ProgAndy\n",
                     basename(name));
 }
 
+// print usage to stdout
 void usage(void) {
 	usage_fd(stdout);
 }
 
+// print help to stdout
 void help() {
 	puts("fakeadd is a tool to add users groups to a fakeuser environment.\n"
 			"fakeuser works best in conjunction with fakeroot. Use it with LD_PRELOAD.\n");
@@ -63,14 +65,15 @@ void help() {
 		);
 }
 
-
+// convert string to array with specified delimiters
+// if strings is not null, receives pointer to buffer for elements
 char **string_to_array(const char *s, const char *delims, char **strings)
 {
 		char ** array = malloc( (strlen(s)/2 + 2) * sizeof(char*) );
         char *str = strdup(s);
 		if (strings) *strings = str;
 		int len = 0;
-		
+
 		char *tok = strtok(str, delims);
 		while (tok) {
 			array[len++] = tok;
@@ -87,13 +90,13 @@ char **string_to_array(const char *s, const char *delims, char **strings)
 int main(int argc, char **argv) {
 	char * tmpdir = getenv("_FAKEUSER_DIR_");
 	char *passwd_file, *group_file;
-	
+
 	name = argv[0];
     int opt, ret = 0;
 	int action = 0, uid = 0, gid = 0;
     char *name = NULL, *passwd = NULL, *members = NULL, *shell = NULL, *gecos = NULL, *dir = NULL;
 	extern char *optarg;
-	
+
     while ((opt = getopt(argc, argv, "UGu:g:n:p:m:s:c:d:h")) != -1) {
         switch (opt) {
         case 'U':
@@ -138,22 +141,25 @@ int main(int argc, char **argv) {
 		usage();
 		exit(EXIT_FAILURE);
 	}
-	
+	// only continue when environment variable with directory found.
 	if (!tmpdir) {
 		fputs("Error! Not in fakeuser environment\n", stderr);
 		exit(EXIT_FAILURE);
 	}
+	// init file paths
 	passwd_file = (char*)malloc(strlen(tmpdir)+10);
-	group_file = (char*)malloc(strlen(tmpdir)+10);
 	strcpy(passwd_file, tmpdir);
-	strcpy(group_file, tmpdir);
 	strcat(passwd_file, "/passwd");
+
+	group_file = (char*)malloc(strlen(tmpdir)+10);
+	strcpy(group_file, tmpdir);
 	strcat(group_file, "/group");
 
 	// Create directory structure
 	mkdir_r(tmpdir, S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
-	
+
 	if (action == 'U') {
+		// create and append passwd entry
 		struct passwd pw;
 		pw.pw_name = name;
 		pw.pw_passwd = passwd ? passwd : "";
@@ -162,6 +168,7 @@ int main(int argc, char **argv) {
 		pw.pw_shell = shell ? shell : "";
 		pw.pw_uid = uid;
 		pw.pw_gid = gid;
+		// append to file with error handling.
 		FILE * pwf = fopen(passwd_file, "a");
 		if (pwf) {
 			if(putpwent(&pw, pwf))
@@ -171,12 +178,14 @@ int main(int argc, char **argv) {
 		} else
 			ret = EIO;
 	} else if (action == 'G') {
+		// create and append group entry
 		struct group gr;
 		gr.gr_name = name;
 		gr.gr_passwd = passwd ? passwd : "";
 		gr.gr_gid = gid;
 		char *strings;
 		gr.gr_mem = members ? string_to_array(members, " ,;", &strings) : (char *[]){NULL};
+		// append to file with error handling.
 		FILE * pwf = fopen(group_file, "a");
 		if (pwf) {
 			if(putgrent(&gr, pwf))
@@ -185,7 +194,7 @@ int main(int argc, char **argv) {
 				ret = EIO;
 		} else
 			ret = EIO;
-		//return fakeaddgroup(&gr);
 	}
+	// return 0 on success or the error value
 	return ret;
 }
