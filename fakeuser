@@ -1,0 +1,40 @@
+#!/bin/sh
+#
+#    (C) 2016 ProgAndy
+#
+#    This file is part of fakeuser.
+#
+#    fakeuser is free software: you can redistribute it and/or modify
+#    it under the terms of the GNU General Public License as published by
+#    the Free Software Foundation, either version 2 of the License, or
+#    (at your option) any later version.
+#
+#    fakeuser is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU General Public License for more details.
+#
+#    You should have received a copy of the GNU General Public License
+#    along with fakeuser.  If not, see <http://www.gnu.org/licenses/>.
+#
+
+if [ $# -lt 1 -o "$1"x = "-h"x -o "$1"x = "--help"x ]; then
+	printf "fakeuser COMMAND ...\n\n%s\n%s\n\n%s" \
+		"fakeuser runs a program in an environment that supports adding temporary" \
+		"users with fakeadd that are not known to the running operating system." \
+		"(c) 2016 by ProgAndy under GPLv2+\n"
+	exit
+fi
+
+LIB="libfakeuser.so"
+
+# Keep preloaded libs
+if test -n "$LD_PRELOAD"; then
+  LIB="$LIB:$LD_PRELOAD"
+fi
+
+LD_PRELOAD="$LIB"
+
+export LD_PRELOAD
+
+exec "$@"
