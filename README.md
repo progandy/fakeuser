@@ -3,7 +3,7 @@ fakeuser
 
 LD_PRELOAD module to create fake users (use with fakeroot)
 Licence: GPL
-(C) 2013 ProgAndy
+(C) 2013-2016 ProgAndy
 
 
 

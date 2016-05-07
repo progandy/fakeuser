@@ -1,5 +1,5 @@
 /*
-    (C) 2013 ProgAndy
+    (C) 2013-2016 ProgAndy
 
     This file is part of fakeuser.
 

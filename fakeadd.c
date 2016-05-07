@@ -1,5 +1,5 @@
 /*
-    (C) 2013 ProgAndy
+    (C) 2013-2016 ProgAndy
 
     This file is part of fakeuser.
 
@@ -33,7 +33,7 @@ static char *name;
 // print usage to given stream
 void usage_fd(FILE * f) {
 	fprintf(f,"Usage: %s -G|-U -n name [-g gid] [-u uid] [-p password] [-m memberlist] [-s shell] [-c gecos] [-d dir] [-h] \n"
-		"(C) 2013 ProgAndy\n",
+		"(C) 2013-2016 ProgAndy\n",
                     basename(name));
 }
 
