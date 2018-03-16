@@ -19,10 +19,10 @@
 #
 
 if [ $# -lt 1 -o "$1"x = "-h"x -o "$1"x = "--help"x ]; then
-	printf "fakeuser COMMAND ...\n\n%s\n%s\n\n%s" \
+	printf "fakeuser COMMAND ...\n\n%s\n%s\n\n%s\n" \
 		"fakeuser runs a program in an environment that supports adding temporary" \
 		"users with fakeadd that are not known to the running operating system." \
-		"(c) 2016 by ProgAndy under GPLv2+\n"
+		"(c) 2016 by ProgAndy under GPLv2+"
 	exit
 fi
 
